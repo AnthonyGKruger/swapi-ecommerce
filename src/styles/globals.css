@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -24,4 +24,34 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+} */
+
+::-moz-selection { 
+  color: #0F172A;
+  background: #FFC72B;
+}
+
+::selection {
+  color: #0F172A;
+  background: #FFC72B;
+}
+
+@media only screen and (min-width: 768px) {
+	.cardDescription {
+		width: 100%;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 4 !important;
+		-webkit-box-orient: vertical;
+		/* background: #fff; */
+	}
+}
+
+.cardDescription {
+	width: 100%;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	/* background: #fff; */
 }

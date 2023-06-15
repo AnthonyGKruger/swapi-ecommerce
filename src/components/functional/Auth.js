@@ -2,9 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
-import { userActions } from "@/store/userSlice";
-
-import { fetchUser } from "@/store/userSlice";
+import { loginHandler, userActions } from "@/store/userSlice";
 
 // import store from "@/store";
 // import { fetchUsers } from "@/store/user-slice";
@@ -88,10 +86,15 @@ const Auth = () => {
 
 	// userState.notExistingUser ? setShowRegister(true) : "";
 
+
 	return (
 		<>
 			<button
-				onClick={() => setIsShowing(true)}
+				onClick={() =>
+					userState.user.isLoggedIn
+						? dispatch(userActions.logoutHandler())
+						: setIsShowing(true)
+				}
 				// className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-yellow-500 px-5 text-sm font-medium tracking-wide text-white transition duration-300 hover:bg-yellow-600 focus:bg-yellow-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:border-yellow-300 disabled:bg-yellow-300 disabled:shadow-none"
 				className="flex items-center gap-2 py-4 text-yellow-400 transition-colors duration-300 hover:text-yellow-600 hover:border-b-2 hover:border-yellow-200 focus:outline-none focus-visible:outline-none lg:px-8"
 			>
@@ -104,7 +107,7 @@ const Auth = () => {
 					className="hover:animate-bounce"
 				/>
 
-				<span>{userState.isLoggedIn ? "Log Out" : "Sign In"}</span>
+				<span>{userState.user.isLoggedIn ? "Log Out" : "Sign In"}</span>
 			</button>
 
 			{isShowing && typeof document !== "undefined"
@@ -280,7 +283,7 @@ const Auth = () => {
 											showRegister
 												? ""
 												: dispatch(
-														fetchUser({
+														loginHandler({
 															userEmail: userState.user.email,
 															userPassword: userState.user.password,
 														})

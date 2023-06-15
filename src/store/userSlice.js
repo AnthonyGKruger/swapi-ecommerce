@@ -23,7 +23,7 @@ export const validateName = (str) => {
 //can delete
 
 const initialState = {
-	status: "idle",
+	// status: "idle",
 	user: {
 		isLoggedIn: false,
 		name: "",
@@ -34,18 +34,21 @@ const initialState = {
 	error: null,
 };
 
-export const fetchUser = createAsyncThunk("/user", async ({userEmail, userPassword}) => {
-	// alert(userEmail);
-	try {
-		const response = await axios.post(
-			"/api/users",
-			{ userEmail, userPassword }
-		);
-		return response.data;
-	} catch (error) {
-		return error.message;
+export const loginHandler = createAsyncThunk(
+	"/user",
+	async ({ userEmail, userPassword }) => {
+		// alert(userEmail);
+		try {
+			const response = await axios.post("/api/users", {
+				userEmail,
+				userPassword,
+			});
+			return response.data;
+		} catch (error) {
+			return error.message;
+		}
 	}
-});
+);
 
 // const FETCH_USER_REQUESTED = "FETCH_USER_REQUESTED";
 // const FETCH_USER_SUCCEEDED = "FETCH_USER_SUCCEEDED";
@@ -84,7 +87,13 @@ const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		loginHandler(state, action) {},
+		// loginHandler(state, action) {},
+		logoutHandler(state) {
+			state.user.isLoggedIn = false;
+			state.user.name = "";
+			state.user.email = "";
+			state.user.password = "";
+		},
 		inputChangeHandler(state, action) {
 			if (action.payload.type === "PASSWORD") {
 				state.user.password = action.payload.value;
@@ -98,9 +107,13 @@ const userSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		// Add reducers for additional action types here, and handle loading state as needed
-		builder.addCase(fetchUser.fulfilled, (state, action) => {
+		builder.addCase(loginHandler.fulfilled, (state, action) => {
 			// Add user to the state array
 			console.log(action.payload);
+
+			state.user.isLoggedIn = true;
+			state.user.name = action.payload.name;
+			state.user.email = action.payload.email;
 		});
 	},
 });

@@ -36,7 +36,8 @@
 // export default handler;
 
 const handler = async (req, res) => {
-	const fetchData = async (userCredentials) => {
+	
+	const loginHandler = async (userCredentials) => {
 		let fetchedUser = { isUser: false };
 
 		// console.log("here");
@@ -47,8 +48,8 @@ const handler = async (req, res) => {
 
 		await response.json().then((data) =>
 			Object.values(data).forEach((user) => {
-				console.log("user: " + user);
-				console.log("userCredentials", userCredentials);
+				// console.log("user: " + user);
+				// console.log("userCredentials", userCredentials);
 				if (
 					user.email == userCredentials.userEmail &&
 					user.password == userCredentials.userPassword
@@ -63,7 +64,7 @@ const handler = async (req, res) => {
 			})
 		);
 
-		console.log(fetchedUser);
+		// console.log(fetchedUser);
 
 		// await response.json().then((data) => {
 		// 	data.forEach((user) => {
@@ -87,8 +88,8 @@ const handler = async (req, res) => {
 	};
 
 	if (req.method === "POST") {
-		console.log("1", req.body);
-		await fetchData(req.body);
+		// console.log("1", req.body);
+		await loginHandler(req.body);
 		// await fetchData(JSON.parse(req.body));
 	}
 };

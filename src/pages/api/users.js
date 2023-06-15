@@ -1,44 +1,96 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+// const handler = async (req, res) => {
+
+// 	const fetchData = async (userCredentials) => {
+// 		let fetchedUser = { isUser: false };
+
+// 		const response = await fetch(
+// 			"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json"
+// 		);
+
+// 		await response.json().then((data) => {
+// 			data.forEach((user) => {
+// 				if (
+// 					JSON.stringify(user.email) ==
+// 						JSON.stringify(userCredentials.userEmail) &&
+// 					JSON.stringify(user.password) ==
+// 						JSON.stringify(userCredentials.userPassword)
+// 				) {
+// 					fetchedUser = {
+// 						isUser: true,
+// 						email: user.email,
+// 						name: user.name,
+// 						userId: user.userId,
+// 					};
+// 				}
+// 			});
+// 		});
+
+// 		return res.status(200).json(fetchedUser);
+// 	};
+
+// 	if (req.method === "POST") {
+// 		await fetchData(JSON.parse(req.body));
+// 	}
+// };
+
+// export default handler;
 
 const handler = async (req, res) => {
-	// const users = async () => {
-	// 	const response = await fetch(
-	// 		"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json"
-	// 	);
-	// 	const data = response.json();
-	// 	// const data = JSON.parse(response);
-	// 	console.log(data);
-	//   return data;
-	// 	// console.log(data);
-	// };
-	// const userData = users();
+	const fetchData = async (userCredentials) => {
+		let fetchedUser = { isUser: false };
 
-	// const fetchData = async () => {
-	// 	await fetch(
-	// 		"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json"
-	// 	)
-	// 		.then((response) => {
-	//       console.log(response);
-	// 			response.json();
-	// 		})
-	// 		.then((data) => {
-	// 			console.log(data);
-	// 		});
-	// };
+		// console.log("here");
 
-	const fetchData = async () => {
 		const response = await fetch(
 			"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json"
 		);
 
-		const jsonData = await response.json();
+		await response.json().then((data) =>
+			Object.values(data).forEach((user) => {
+				console.log("user: " + user);
+				console.log("userCredentials", userCredentials);
+				if (
+					user.email == userCredentials.userEmail &&
+					user.password == userCredentials.userPassword
+				) {
+					fetchedUser = {
+						isUser: true,
+						email: user.email,
+						name: user.name,
+						userId: user.userId,
+					};
+				}
+			})
+		);
 
-		// return jsonData;
-		return res.status(200).json(jsonData);
+		console.log(fetchedUser);
+
+		// await response.json().then((data) => {
+		// 	data.forEach((user) => {
+		// 		if (
+		// 			JSON.stringify(user.email) ==
+		// 				JSON.stringify(userCredentials.userEmail) &&
+		// 			JSON.stringify(user.password) ==
+		// 				JSON.stringify(userCredentials.userPassword)
+		// 		) {
+		// 			fetchedUser = {
+		// 				isUser: true,
+		// 				email: user.email,
+		// 				name: user.name,
+		// 				userId: user.userId,
+		// 			};
+		// 		}
+		// 	});
+		// });
+
+		return res.status(200).json(fetchedUser);
 	};
 
-	await fetchData();
-	// return res.status(200).json(fetchData());
+	if (req.method === "POST") {
+		console.log("1", req.body);
+		await fetchData(req.body);
+		// await fetchData(JSON.parse(req.body));
+	}
 };
 
 export default handler;

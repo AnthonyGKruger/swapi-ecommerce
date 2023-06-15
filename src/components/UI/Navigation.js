@@ -2,7 +2,7 @@ import { useState } from "react";
 // import logo from "/media/images/star-wars-logo.svg"
 import Image from "next/image";
 import { useRouter } from "next/router";
-import SignUpRegister from "../functional/SignUp";
+import Auth from "../functional/Auth";
 
 const Navigation = () => {
 	const [isToggleOpen, setIsToggleOpen] = useState(false);
@@ -131,7 +131,7 @@ const Navigation = () => {
 									/>
 									Sign In
 								</a> */}
-								<SignUpRegister/>
+								<Auth/>
 							</li>
 						</ul>
 					</nav>

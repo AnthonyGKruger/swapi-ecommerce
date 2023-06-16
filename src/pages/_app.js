@@ -5,6 +5,7 @@ import Modal from "@/components/UI/Modal";
 import Head from "next/head";
 import { Provider } from "react-redux";
 import store from "@/store";
+// import { Analytics } from "@vercel/analytics/react";
 
 export default function App({ Component, pageProps }) {
 	return (
@@ -23,6 +24,7 @@ export default function App({ Component, pageProps }) {
 				<Modal showing={true} />
 				<Footer />
 			</Provider>
+			{/* <Analytics /> */}
 		</>
 	);
 }

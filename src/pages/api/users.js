@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const handler = async (req, res) => {
 	const loginHandler = async (userCredentials) => {
 		let fetchedUser = { isUser: false };
@@ -32,24 +34,50 @@ const handler = async (req, res) => {
 	const registerHandler = async (userCredentials) => {
 		// let fetchedUser = { isUser: false };
 
-		console.log("here");
+		// console.log(userCredentials);
+
+		let lastUserId;
+		let newUser;
 
 		try {
-			const response = await axios.post(
-				"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json",
-				userData
-			);
-			return response.data;
+			await axios
+				.get(
+					"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json"
+				)
+				.then((response) => {
+					// console.log(response.data);
+					Object.values(response.data).forEach((user) => {
+						console.log(user);
+						lastUserId = user.userId;
+					});
+				});
+			newUser = {
+				email: userCredentials.userEmail.toLowerCase(),
+				name: userCredentials.userName.toLowerCase(),
+				password: userCredentials.userPassword,
+				userId: lastUserId + 1,
+			};
+			try {
+				console.log("here");
+				await axios.post(
+					"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json",
+					newUser
+				);
+			} catch (error) {
+				console.log("2", error.message);
+			}
 		} catch (error) {
-			return error.message;
+			console.log("1", error.message);
 		}
 
-		return res.status(200).json(fetchedUser);
+		return res.status(200).json("successfully registered.");
 	};
 
 	if (req.method === "POST") {
 		if (req.body.action == "login") {
 			await loginHandler(req.body);
+		} else if (req.body.action == "register") {
+			await registerHandler(req.body);
 		}
 	}
 };

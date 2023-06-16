@@ -307,7 +307,14 @@ const Auth = () => {
 							return;
 						}
 						showRegister
-							? ""
+							? dispatch(
+									dataHandler({
+										action: "register",
+										userEmail: userState.user.email,
+										userPassword: userState.user.password,
+										userName: userState.user.name,
+									})
+							  )
 							: dispatch(
 									dataHandler({
 										action: "login",

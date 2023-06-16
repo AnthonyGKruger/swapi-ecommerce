@@ -12,15 +12,17 @@ export const validateName = (str) => {
 	return nameRegex.test(str);
 };
 
-// const loginHelper = createAsyncThunk("/api/users", async () => {
-// 	const response = await fetch("/api/users", {
-// 		method: "POST",
-// 		body: JSON.stringify({ userEmail, userPassword }),
-// 	});
-// 	return response.data;
-// });
+export const validatePassword = (password) => {
+	// Regex to validate password
+	var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-//can delete
+	// Validate password
+	if (regex.test(password)) {
+		return true;
+	} else {
+		return false;
+	}
+};
 
 const initialState = {
 	// status: "idle",
@@ -34,54 +36,17 @@ const initialState = {
 	error: null,
 };
 
-export const loginHandler = createAsyncThunk(
+export const dataHandler = createAsyncThunk(
 	"/user",
-	async ({ userEmail, userPassword }) => {
-		// alert(userEmail);
+	async (userData) => {
 		try {
-			const response = await axios.post("/api/users", {
-				userEmail,
-				userPassword,
-			});
+			const response = await axios.post("/api/users", userData);
 			return response.data;
 		} catch (error) {
 			return error.message;
 		}
 	}
 );
-
-// const FETCH_USER_REQUESTED = "FETCH_USER_REQUESTED";
-// const FETCH_USER_SUCCEEDED = "FETCH_USER_SUCCEEDED";
-// const FETCH_USER_FAILED = "FETCH_USER_FAILED";
-
-// const fetchUserRequest = () => {
-// 	return { type: FETCH_USER_REQUESTED };
-// };
-
-// const fetchUserSucceeded = () => {
-// 	return { type: FETCH_USER_SUCCEEDED, payload: user };
-// };
-
-// const fetchUserFailed = (error) => {
-// 	return { type: FETCH_USER_FAILED, payload: error };
-// };
-
-// const fetchUser = () => {
-// 	return (dispatch) => {
-// 		dispatch(fetchUserRequest());
-// 		axios
-// 			.post("/api/users", JSON.stringify({ userEmail, userPassword }))
-// 			.then((response) => {
-// 				// response.data is the users
-// 				const user = response.data;
-// 				dispatch(fetchUserSuccess(user));
-// 			})
-// 			.catch((error) => {
-// 				// error.message is the error message
-// 				dispatch(fetchUserFailure(error.message));
-// 			});
-// 	};
-// };
 
 const userSlice = createSlice({
 	name: "user",
@@ -102,88 +67,26 @@ const userSlice = createSlice({
 			} else if (action.payload.type === "NAME") {
 				state.user.name = action.payload.value;
 			}
-			return;
+			state.error = false;
+		},
+		setError(state, action) {
+			state.error = action.payload.hasError;
 		},
 	},
 	extraReducers: (builder) => {
 		// Add reducers for additional action types here, and handle loading state as needed
-		builder.addCase(loginHandler.fulfilled, (state, action) => {
-			// Add user to the state array
-			console.log(action.payload);
+		builder
+			.addCase(dataHandler.fulfilled, (state, action) => {
+				console.log(action.payload);
 
-			state.user.isLoggedIn = true;
-			state.user.name = action.payload.name;
-			state.user.email = action.payload.email;
-		});
+				if (action.payload.isUser) {
+					state.user.isLoggedIn = true;
+					state.user.name = action.payload.name;
+					state.user.email = action.payload.email;
+				}
+			})
 	},
 });
-
-// export const loginHelper = async (userEmail, userPassword) => {
-// 	const response = await fetch("/api/users", {
-// 		method: "POST",
-// 		body: JSON.stringify({ userEmail, userPassword }),
-// 	});
-
-// 	const data = await response.json();
-
-// 	console.log(data);
-
-// 	return data;
-// };
-
-// export const fetchUsers = async (dispatch) => {
-// 	const response = await fetch("/api/users", {
-// 		method: "POST",
-// 	});
-
-// 	const data = await response.json();
-
-// 	dispatch(userSlice.actions.setUsers(data));
-// };
-
-// const userSlice = createSlice({
-// 	name: "user",
-// 	initialState: {
-// 		isLoggedIn: false,
-// 		name: "",
-// 		email: "",
-// 		password: "",
-// 		cart: {},
-// 		notExistingUser: false,
-// 		existingUsers: {},
-// 	},
-// 	reducers: {
-// 		setUsers(state, action) {
-// 			state.existingUsers = action.payload;
-// 		},
-// 		// loginHandler(state, action) {},
-
-// 		inputChangeHandler(state, action) {
-// 			if (action.payload.type === "PASSWORD") {
-// 				state.password = action.payload.value;
-// 			} else if (action.payload.type === "EMAIL") {
-// 				state.email = action.payload.value;
-// 			} else if (action.payload.type === "NAME") {
-// 				state.name = action.payload.value;
-// 			}
-// 			return;
-// 		},
-
-// 		// errorHandler(state, action) {
-// 		// 	state.error = action.payload.isError;
-// 		// },
-
-// 		// formErrorHandler(state, action) {
-// 		// 	state.formHasErrors = action.payload.formHasErrors;
-// 		// },
-// 	},
-// 	extraReducers: (builder) => {
-// 		builder.addCase(loginHelper.fulfilled, (state, action) => {
-// 			// Add user to the state array
-// 			// state.entities.push(action.payload);
-// 		});
-// 	},
-// });
 
 export const userActions = userSlice.actions;
 

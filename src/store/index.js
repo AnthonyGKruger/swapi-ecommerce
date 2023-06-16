@@ -8,11 +8,4 @@ const store = configureStore(
 	}
 );
 
-// const store = configureStore(
-// 	{
-// 		reducer: { user: userSlice.reducer },
-// 	},
-// 	composedEnhancer
-// );
-
 export default store;

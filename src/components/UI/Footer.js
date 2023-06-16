@@ -171,6 +171,7 @@ const Footer = () => {
 									width={100}
 									height={100}
 									alt="Star wars"
+									priority
 								/>
 							</a>
 							<nav

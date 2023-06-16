@@ -312,8 +312,11 @@ const Modal = ({ showing }) => {
 							target="_blank"
 							className="hover:underline text-yellow-200 hover:text-yellow-400 transition duration-300"
 						>
-							EZdev portfolio
-						</a>
+							EZdev portfolio.
+						</a>{" "}
+						This site is currently still being developed but feel free to look
+						around. Also...please note that if you are seeing this message you
+						acknowledge the fact that this site uses cookies.
 					</p>
 				</div>
 				{/*        <!-- Modal actions --> */}

@@ -1,4 +1,5 @@
 import axios from "axios";
+import bcrypt from "bcrypt";
 
 const handler = async (req, res) => {
 	const loginHandler = async (userCredentials) => {
@@ -11,24 +12,37 @@ const handler = async (req, res) => {
 		);
 
 		await response.json().then((data) =>
-			Object.values(data).forEach((user) => {
+			Object.values(data).forEach(async (user) => {
 				// console.log("user: " + user);
 				// console.log("userCredentials", userCredentials);
+				console.log("submitted password", userCredentials.userPassword);
+				console.log("fetched password", user.password);
+				console.log(
+					"compared",
+					await bcrypt.compare(userCredentials.userPassword, user.password)
+				);
 				if (
-					user.email == userCredentials.userEmail &&
-					user.password == userCredentials.userPassword
+					user.email == userCredentials.userEmail
+					// &&
+					// (await bcrypt.compare(userCredentials.userPassword, user.password))
+					// user.password == userCredentials.userPassword
 				) {
-					fetchedUser = {
-						isUser: true,
-						email: user.email,
-						name: user.name,
-						userId: user.userId,
-					};
+					if (
+						await bcrypt.compare(userCredentials.userPassword, user.password)
+					) {
+						fetchedUser = {
+							isUser: true,
+							email: user.email,
+							name: user.name,
+							userId: user.userId,
+						};
+						return res.status(200).json(fetchedUser);
+					}
 				}
 			})
 		);
 
-		return res.status(200).json(fetchedUser);
+		// return res.status(200).json(fetchedUser);
 	};
 
 	const registerHandler = async (userCredentials) => {
@@ -38,6 +52,7 @@ const handler = async (req, res) => {
 
 		let lastUserId;
 		let newUser;
+		const hash = await bcrypt.hash(userCredentials.userPassword, 10);
 
 		try {
 			await axios
@@ -47,14 +62,14 @@ const handler = async (req, res) => {
 				.then((response) => {
 					// console.log(response.data);
 					Object.values(response.data).forEach((user) => {
-						console.log(user);
+						// console.log(user);
 						lastUserId = user.userId;
 					});
 				});
 			newUser = {
 				email: userCredentials.userEmail.toLowerCase(),
 				name: userCredentials.userName.toLowerCase(),
-				password: userCredentials.userPassword,
+				password: hash,
 				userId: lastUserId + 1,
 			};
 			try {
@@ -63,14 +78,13 @@ const handler = async (req, res) => {
 					"https://ezdev-portfolio-1682048067466-default-rtdb.europe-west1.firebasedatabase.app/users.json",
 					newUser
 				);
+				return res.status(200).json("successfully registered");
 			} catch (error) {
-				console.log("2", error.message);
+				console.log("error registering:", error.message);
 			}
 		} catch (error) {
-			console.log("1", error.message);
+			console.log("error getting users:", error.message);
 		}
-
-		return res.status(200).json("successfully registered.");
 	};
 
 	if (req.method === "POST") {

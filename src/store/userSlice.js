@@ -52,7 +52,6 @@ const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		// loginHandler(state, action) {},
 		logoutHandler(state) {
 			state.user.isLoggedIn = false;
 			state.user.name = "";
@@ -74,10 +73,13 @@ const userSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		// Add reducers for additional action types here, and handle loading state as needed
 		builder
 			.addCase(dataHandler.fulfilled, (state, action) => {
-				console.log(action.payload);
+			
+				if(action.payload == "successfully registered"){
+					console.log("user registered and successfully logged in.")
+					state.user.isLoggedIn = true;
+				}
 
 				if (action.payload.isUser) {
 					state.user.isLoggedIn = true;
